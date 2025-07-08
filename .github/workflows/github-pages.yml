@@ -5,22 +5,36 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Jupyter
+        run: pip install jupyter
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
-          
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
 
-      - name: Install dependencies
+      - name: Install Bundler and Dependencies
         run: |
           gem install bundler
           bundle install
